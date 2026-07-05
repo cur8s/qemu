@@ -47,7 +47,8 @@ the action always runs with the exact script it was released with.
 
 Versioning follows the established actions norm: every release is a
 semver tag (`vX.Y.Z`) published as an immutable release, and a plain
-moving major tag (`v1`) is maintained as the convenience pointer,
+moving major tag (`v0` today; `v1` once the contract is declared
+stable) is maintained as the convenience pointer,
 force-moved to each release within the major. The major tag is mutable
 by design; consumers who need immutability pin the full tag or the
 commit SHA. Nothing — no channel, no example, no README snippet —

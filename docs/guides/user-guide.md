@@ -106,7 +106,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Boot a VM
         id: vm
-        uses: cur8s/qemu/action@v1
+        uses: cur8s/qemu/action@v0
         with:
           user-data: ./ci/user-data.yaml
       - name: Run against the VM

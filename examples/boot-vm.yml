@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: cur8s/qemu/action@v1
+      - uses: cur8s/qemu/action@v0
         id: vm
         # with:
         #   user-data: ./my-cloud-init.yaml   # your own #cloud-config

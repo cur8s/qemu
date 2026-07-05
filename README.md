@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest   # x64: no KVM on arm64/macOS runners
     steps:
       - uses: actions/checkout@v4
-      - uses: cur8s/qemu/action@v1
+      - uses: cur8s/qemu/action@v0
         id: vm
       - run: |
           ssh -p ${{ steps.vm.outputs.ssh-port }} \
@@ -49,8 +49,9 @@ header, and `docs/guides/user-guide.md`.
   header; refresh deliberately with the pinned one-liner in the header.
 - **Release download** (everyone else): each `vX.Y.Z` release carries
   `qemu-vm.sh` and its sha256; pin versions, verify checksums.
-- **The action** (`cur8s/qemu/action@v1`): `v1` follows the latest
-  compatible release; pin the full SHA if you need immutability.
+- **The action** (`cur8s/qemu/action@v0`): `v0` follows the latest
+  compatible release (it becomes `v1` when the contract is declared
+  stable); pin the full SHA if you need immutability.
 
 ## The contract
 
