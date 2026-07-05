@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+#MISE description="Smoke test: throwaway key -> create -> boot -> wait -> ssh -> destroy"
+set -eu
+gen="$MISE_CONFIG_ROOT/.generated"
+mkdir -p "$gen"
+
+key="$gen/smoke-key"
+if [ ! -f "$key" ]; then
+  ssh-keygen -q -t ed25519 -N '' -C qemu-vm-smoke -f "$key"
+fi
+
+user_data="$gen/smoke-user-data.yaml"
+{
+  printf '#cloud-config\n'
+  printf 'ssh_pwauth: false\n'
+  printf 'users:\n'
+  printf '  - name: smoke\n'
+  printf '    shell: /bin/bash\n'
+  printf '    sudo: "ALL=(ALL) NOPASSWD:ALL"\n'
+  printf '    lock_passwd: true\n'
+  printf '    ssh_authorized_keys:\n'
+  printf '      - "%s"\n' "$(cat "$key.pub")"
+} > "$user_data"
+
+vm="$MISE_CONFIG_ROOT/qemu-vm.sh"
+QVM_USER_DATA="$user_data" "$vm" create
+"$vm" boot
+"$vm" wait smoke "$key"
+"$vm" ssh smoke "$key" 'set -e; uname -a; cloud-init status; sudo true'
+"$vm" destroy
+echo
+echo "smoke test PASSED: create -> boot -> wait -> ssh -> destroy"

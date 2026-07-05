@@ -1,0 +1,10 @@
+# cur8s.qemu — contributor convenience for the vendorable VM script.
+# The product is qemu-vm.sh; these tasks smoke-test it locally with a
+# throwaway key and everything under git-ignored .generated/.
+#
+# Task scripts must be executable or mise silently ignores them.
+
+[env]
+QVM_DIR = "{{config_root}}/.generated/vm"
+QVM_CACHE_DIR = "{{config_root}}/.generated/cache"
+QVM_NAME = "qemu-vm-dev"

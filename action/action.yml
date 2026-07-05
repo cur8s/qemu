@@ -1,0 +1,123 @@
+name: qemu-vm
+description: >-
+  Boot a disposable Ubuntu cloud VM on the runner (KVM) from plain
+  cloud-init user-data. The VM lives for the job; your later steps SSH
+  into it via the outputs.
+branding:
+  icon: box
+  color: orange
+
+inputs:
+  user-data:
+    description: >-
+      Path to a #cloud-config user-data file, passed to the VM verbatim.
+      Empty (the default) generates a minimal one: user `ssh-user` with a
+      fresh ed25519 keypair and passwordless sudo.
+    default: ''
+  ssh-user:
+    description: User for wait/ssh. With your own user-data it must exist there.
+    default: 'ubuntu'
+  ssh-identity:
+    description: >-
+      Private key path for wait/ssh. Required when user-data is provided
+      and wait is true; ignored when user-data is generated.
+    default: ''
+  wait:
+    description: Block until cloud-init reports done (rides out a first-boot reboot).
+    default: 'true'
+  image-url:
+    description: Cloud image URL override. Empty = Ubuntu 24.04 noble, host arch.
+    default: ''
+  ssh-port:
+    default: '2222'
+  cpus:
+    default: '2'
+  memory:
+    default: '2G'
+  disk-size:
+    default: '20G'
+
+outputs:
+  ssh-port:
+    value: ${{ inputs.ssh-port }}
+  ssh-user:
+    value: ${{ inputs.ssh-user }}
+  ssh-identity:
+    description: Private key that can log in (generated or the one you provided).
+    value: ${{ steps.boot.outputs.ssh-identity }}
+  vm-dir:
+    description: VM state directory (pass as QVM_DIR to drive qemu-vm.sh yourself).
+    value: ${{ steps.boot.outputs.vm-dir }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install QEMU and seed tooling
+      shell: bash
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y -qq --no-install-recommends \
+          qemu-system-x86 qemu-utils genisoimage
+
+    - name: Open /dev/kvm to the runner user
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+          | sudo tee /etc/udev/rules.d/99-kvm4all.rules >/dev/null
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    - name: Cache the cloud image
+      uses: actions/cache@v4
+      with:
+        path: ${{ github.workspace }}/.qvm-cache
+        key: qvm-image-${{ inputs.image-url || 'noble-current-amd64' }}
+
+    - name: Create and boot the VM
+      id: boot
+      shell: bash
+      env:
+        QVM_DIR: ${{ runner.temp }}/qvm/vm
+        QVM_CACHE_DIR: ${{ github.workspace }}/.qvm-cache
+        QVM_IMAGE_URL: ${{ inputs.image-url }}
+        QVM_SSH_PORT: ${{ inputs.ssh-port }}
+        QVM_CPUS: ${{ inputs.cpus }}
+        QVM_MEMORY: ${{ inputs.memory }}
+        QVM_DISK_SIZE: ${{ inputs.disk-size }}
+      run: |
+        user_data='${{ inputs.user-data }}'
+        identity='${{ inputs.ssh-identity }}'
+        if [ -z "$user_data" ]; then
+          identity="$RUNNER_TEMP/qvm-key"
+          ssh-keygen -q -t ed25519 -N '' -f "$identity"
+          user_data="$RUNNER_TEMP/qvm-user-data.yaml"
+          {
+            printf '#cloud-config\n'
+            printf 'ssh_pwauth: false\n'
+            printf 'users:\n'
+            printf '  - name: %s\n' '${{ inputs.ssh-user }}'
+            printf '    shell: /bin/bash\n'
+            printf '    sudo: "ALL=(ALL) NOPASSWD:ALL"\n'
+            printf '    lock_passwd: true\n'
+            printf '    ssh_authorized_keys:\n'
+            printf '      - "%s"\n' "$(cat "$identity.pub")"
+          } > "$user_data"
+        elif [ '${{ inputs.wait }}' = 'true' ] && [ -z "$identity" ]; then
+          echo "ssh-identity is required when user-data is provided and wait is true." >&2
+          exit 1
+        fi
+        QVM_USER_DATA="$user_data" "$GITHUB_ACTION_PATH/../qemu-vm.sh" create
+        "$GITHUB_ACTION_PATH/../qemu-vm.sh" boot
+        echo "ssh-identity=$identity" >> "$GITHUB_OUTPUT"
+        echo "vm-dir=$QVM_DIR" >> "$GITHUB_OUTPUT"
+
+    - name: Wait for cloud-init
+      if: ${{ inputs.wait == 'true' }}
+      shell: bash
+      env:
+        QVM_DIR: ${{ runner.temp }}/qvm/vm
+        QVM_CACHE_DIR: ${{ github.workspace }}/.qvm-cache
+        QVM_SSH_PORT: ${{ inputs.ssh-port }}
+      run: |
+        "$GITHUB_ACTION_PATH/../qemu-vm.sh" wait \
+          '${{ inputs.ssh-user }}' '${{ steps.boot.outputs.ssh-identity }}'

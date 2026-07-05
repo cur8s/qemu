@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+#MISE description="Destroy any smoke VM and delete .generated/ (image cache included)"
+set -eu
+"$MISE_CONFIG_ROOT/qemu-vm.sh" destroy
+rm -rf "$MISE_CONFIG_ROOT/.generated"
+echo "Clean: .generated/ removed."

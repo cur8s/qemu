@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+#MISE description="shellcheck the product (same gate CI runs)"
+set -eu
+if ! command -v shellcheck >/dev/null 2>&1; then
+  echo "shellcheck not installed (brew install shellcheck)." >&2
+  exit 1
+fi
+shellcheck "$MISE_CONFIG_ROOT/qemu-vm.sh"
+echo "lint clean."

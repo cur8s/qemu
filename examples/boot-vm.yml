@@ -1,0 +1,27 @@
+# Copy-paste consumer workflow: boot a disposable Ubuntu VM in CI and
+# run your commands against it. Prefer the action reference below; this
+# file exists for repositories that want to own the lines.
+name: vm-test
+
+on: [push]
+
+jobs:
+  vm-test:
+    runs-on: ubuntu-latest # x64 required: no KVM on arm64/macOS runners
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cur8s/qemu/action@v1
+        id: vm
+        # with:
+        #   user-data: ./my-cloud-init.yaml   # your own #cloud-config
+        #   ssh-user: myuser                  # must exist in it
+        #   ssh-identity: ./path/to/key       # that can log in as myuser
+
+      - name: Run your workload against the VM
+        run: |
+          ssh -p ${{ steps.vm.outputs.ssh-port }} \
+            -i ${{ steps.vm.outputs.ssh-identity }} \
+            -o UserKnownHostsFile=/tmp/kh -o StrictHostKeyChecking=accept-new \
+            ${{ steps.vm.outputs.ssh-user }}@127.0.0.1 'uname -a'
