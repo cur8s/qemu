@@ -3,8 +3,10 @@
 Open work only, in priority order.
 
 ## 1. Release hygiene
-- [ ] Choose the license before anything is tagged as stable (the cur8s
-  family decision — same open question as cur8s/ubuntu's C14).
+- [x] License: deliberately ambiguous across the cur8s family, by
+  operator decision (2026-07-06) — no LICENSE file, on purpose. Note
+  the standing tension: the docs invite vendoring while default
+  copyright grants nothing; revisit if a consumer forces it.
 - [ ] Enable immutable releases in the repository settings (GA
   2025-10-28) so published vX.Y.Z releases lock; the release workflow
   already ships the sha256 asset.
