@@ -106,8 +106,8 @@ runs:
           echo "ssh-identity is required when user-data is provided and wait is true." >&2
           exit 1
         fi
-        QVM_USER_DATA="$user_data" "$GITHUB_ACTION_PATH/../qemu-vm.sh" create
-        "$GITHUB_ACTION_PATH/../qemu-vm.sh" boot
+        QVM_USER_DATA="$user_data" "$GITHUB_ACTION_PATH/../qemu-vm.sh" build-vm
+        "$GITHUB_ACTION_PATH/../qemu-vm.sh" start-vm
         echo "ssh-identity=$identity" >> "$GITHUB_OUTPUT"
         echo "vm-dir=$QVM_DIR" >> "$GITHUB_OUTPUT"
 
@@ -119,5 +119,5 @@ runs:
         QVM_CACHE_DIR: ${{ github.workspace }}/.qvm-cache
         QVM_SSH_PORT: ${{ inputs.ssh-port }}
       run: |
-        "$GITHUB_ACTION_PATH/../qemu-vm.sh" wait \
+        "$GITHUB_ACTION_PATH/../qemu-vm.sh" wait-until-ready \
           '${{ inputs.ssh-user }}' '${{ steps.boot.outputs.ssh-identity }}'

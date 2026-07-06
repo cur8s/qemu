@@ -68,6 +68,10 @@ The versioned contract is RFC-001's surface: the lifecycle verbs, the
   to the semantics or default of an existing `QVM_*` variable, or to
   the on-disk layout (the contents of `QVM_DIR` or the image cache).
 
+Before 1.0 the contract is still settling: a 0.x minor may change the
+surface (each such change is named in the release notes). Declaring
+the contract stable is what 1.0 means.
+
 ## Scope
 
 This RFC defines how `qemu-vm.sh` reaches consumers and what its

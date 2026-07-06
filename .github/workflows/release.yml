@@ -1,8 +1,9 @@
 name: release
 
 # Tag vX.Y.Z -> GitHub release carrying the script + its sha256, then
-# move the plain major tag (v1) to the same commit. Enable immutable
-# releases in the repository settings so published releases lock.
+# move the plain major tag (v0 today, v1 from 1.0) to the same commit.
+# Enable immutable releases in the repository settings so published
+# releases lock.
 
 on:
   push:

@@ -46,7 +46,7 @@ jobs:
       - name: Destroy through the script
         env:
           QVM_DIR: ${{ steps.vm.outputs.vm-dir }}
-        run: ./qemu-vm.sh destroy
+        run: ./qemu-vm.sh destroy-vm
 
       - name: Console log on failure
         if: failure()

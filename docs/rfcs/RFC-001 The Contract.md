@@ -41,8 +41,9 @@ in a couple of minutes" means.
 
 ## Lifecycle verbs are the surface
 
-The command surface is a fixed verb set: `fetch`, `create`, `boot`,
-`wait`, `ssh`, `status`, `console`, `image-path`, `destroy`.
+The command surface is a fixed verb set: `fetch-image`, `build-vm`,
+`start-vm`, `wait-until-ready`, `ssh`, `status`, `show-boot-log`,
+`destroy-vm`, `help`.
 Configuration is `QVM_*` environment variables, every one with a
 working default; setting `QVM_USER_DATA` alone must be enough to get a
 working VM. `destroy` leaves nothing behind but the cached image.

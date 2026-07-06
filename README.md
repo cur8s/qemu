@@ -27,17 +27,17 @@ jobs:
 The action installs QEMU, opens `/dev/kvm`, caches the image, boots,
 and waits for cloud-init; pass `user-data:` to use your own
 `#cloud-config` (with `ssh-user:` and `ssh-identity:` matching it).
-Prefer owning the lines? Copy `examples/boot-vm.yml`.
+Prefer owning the lines? Copy `examples/vm-test.yml`.
 
 ## On a workstation
 
 ```sh
-# macOS: brew install qemu    Linux: apt install qemu-system-x86 qemu-utils genisoimage
-QVM_USER_DATA=./user-data.yaml ./qemu-vm.sh create
-./qemu-vm.sh boot
-./qemu-vm.sh wait ubuntu ./key      # rides out a first-boot reboot
-./qemu-vm.sh ssh  ubuntu ./key
-./qemu-vm.sh destroy
+# macOS (Apple silicon): brew install qemu    Linux: apt install qemu-system-x86 qemu-utils genisoimage (or xorriso)
+QVM_USER_DATA=./user-data.yaml ./qemu-vm.sh build-vm
+./qemu-vm.sh start-vm
+./qemu-vm.sh wait-until-ready ubuntu ./key  # rides out a first-boot reboot
+./qemu-vm.sh ssh              ubuntu ./key
+./qemu-vm.sh destroy-vm
 ```
 
 Full command and `QVM_*` configuration reference: the script's own
