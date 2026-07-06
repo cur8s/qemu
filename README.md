@@ -50,8 +50,7 @@ header, and `docs/guides/user-guide.md`.
 - **Release download** (everyone else): each `vX.Y.Z` release carries
   `qemu-vm.sh` and its sha256; pin versions, verify checksums.
 - **The action** (`cur8s/qemu/action@v0`): `v0` follows the latest
-  compatible release (it becomes `v1` when the contract is declared
-  stable); pin the full SHA if you need immutability.
+  compatible release until a deliberate 1.0; pin the full SHA if you need immutability.
 
 ## The contract
 
