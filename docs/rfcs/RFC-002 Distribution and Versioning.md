@@ -7,7 +7,7 @@ single-file problem already has. Three channels are supported, each
 with its own integrity guarantee. Everything else — git submodules,
 subtree, third-party vendoring tools — was evaluated and rejected; the
 research record lives with consumer #1
-(`cur8s/ubuntu`, `scripts/qemu-vm-research.md`).
+(`docs/notes/qemu-vm-research.md`).
 
 ## Vendored copies
 

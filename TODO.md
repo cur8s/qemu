@@ -3,18 +3,13 @@
 Open work only, in priority order.
 
 ## 1. Release hygiene
-- [x] License: deliberately ambiguous across the cur8s family, by
-  operator decision (2026-07-06) — no LICENSE file, on purpose. Note
-  the standing tension: the docs invite vendoring while default
-  copyright grants nothing; revisit if a consumer forces it.
 - [ ] Enable immutable releases in the repository settings (GA
   2025-10-28) so published vX.Y.Z releases lock; the release workflow
   already ships the sha256 asset.
 
 ## 2. First consumers
-- [ ] cur8s/ubuntu: refresh its vendored `scripts/qemu-vm.sh` from a
-  tagged release once one exists (its copy currently predates the
-  provenance header).
+- [x] cur8s/ubuntu vendors v0.1.0 (refreshed via the header one-liner,
+  its commit 754c941).
 - [ ] The k3s repository's test rig: vendor the script + use the action
   (boot, install k3s from user-data or ssh, assert node Ready).
 - [ ] The sandbox: local quick-VMs beside its DigitalOcean droplets.

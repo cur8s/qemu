@@ -57,6 +57,5 @@ header, and `docs/guides/user-guide.md`.
 The RFCs in `docs/rfcs/` are normative: RFC-001 (cloud-init user-data
 is the interface; daemonless; host-arch; the lifecycle verbs), RFC-002
 (distribution channels and SemVer meaning). The research that shaped
-them is recorded in the cur8s/ubuntu repository
-(`scripts/qemu-vm-research.md`). Contributor loop: `mise run test`
+them is recorded in `docs/notes/qemu-vm-research.md`. Contributor loop: `mise run test`
 (local smoke), `mise run lint`; CI dogfoods the action on every push.
