@@ -76,7 +76,7 @@ the next `build-vm` is fast.
 ## 4. Configuration reference
 
 Everything is an environment variable, and every value has a working
-default — `QVM_USER_DATA` is the only one `create` requires.
+default — `QVM_USER_DATA` is the only one `build-vm` requires.
 
 | Variable | Meaning | Default |
 | --- | --- | --- |
@@ -87,6 +87,8 @@ default — `QVM_USER_DATA` is the only one `create` requires.
 | `QVM_IMAGE_URL` | cloud image | Ubuntu 24.04 noble, current, host architecture |
 | `QVM_SHA256SUMS_URL` | checksum file | `SHA256SUMS` beside the image URL |
 | `QVM_SSH_PORT` | forwarded SSH port | `2222` |
+| `QVM_SSH_IDENTITY_AGENT` | agent socket for ssh signatures; `none` signs with the identity file alone and blocks a globally configured secrets-manager agent | `none` |
+| `QVM_QUIET` | set to `1` to silence informational lines; errors, `status`, and the boot log always print | unset |
 | `QVM_CPUS` | virtual CPUs | `4` |
 | `QVM_MEMORY` | guest memory | `4G` |
 | `QVM_DISK_SIZE` | overlay disk size | `20G` |

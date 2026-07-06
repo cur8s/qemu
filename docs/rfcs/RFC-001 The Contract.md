@@ -46,7 +46,12 @@ The command surface is a fixed verb set: `fetch-image`, `build-vm`,
 `destroy-vm`, `help`.
 Configuration is `QVM_*` environment variables, every one with a
 working default; setting `QVM_USER_DATA` alone must be enough to get a
-working VM. `destroy` leaves nothing behind but the cached image.
+working VM. `destroy-vm` leaves nothing behind but the cached image.
+`status` speaks a stable vocabulary that wrappers may parse: rows
+`image` and `vm`, states `cached|missing` and `running|stopped|absent`.
+Informational output may be silenced with `QVM_QUIET=1` so an
+embedding harness owns the narration; errors, `status`, and the boot
+log always print.
 
 ## Images
 
