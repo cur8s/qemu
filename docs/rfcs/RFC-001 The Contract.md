@@ -48,7 +48,10 @@ Configuration is `QVM_*` environment variables, every one with a
 working default; setting `QVM_USER_DATA` alone must be enough to get a
 working VM. `destroy-vm` leaves nothing behind but the cached image.
 `status` speaks a stable vocabulary that wrappers may parse: rows
-`image` and `vm`, states `cached|missing` and `running|stopped|absent`.
+`image` and `vm`, states `cached|missing` and `running|stopped|absent`;
+when a built VM exists on disk, a `name` row carries the VM's own name,
+read from its seed — the environment can name a different VM than the
+one that was built.
 Informational output may be silenced with `QVM_QUIET=1` so an
 embedding harness owns the narration; errors, `status`, and the boot
 log always print.
